@@ -3,9 +3,10 @@ FROM python:3.12-slim-bookworm
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends --fix-missing \
     libpq-dev \
     gcc \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /code
@@ -18,6 +19,7 @@ COPY pyproject.toml poetry.lock /code/
 RUN poetry config virtualenvs.create false
 RUN poetry install --only main --no-root --no-interaction
 
+EXPOSE 8000
 # If you want to use pip
 # COPY requirements.txt /code/
 # RUN pip install -r requirements.txt
